@@ -27,9 +27,9 @@ import java.util.*
 import kotlin.collections.LinkedHashMap
 
 /**
- * Class representing a JWT for interacting with the Nexmo API.
+ * Class representing a JWT for interacting with the Nexmo API. Construct using Jwt.builder
  */
-class Jwt(val applicationId: String, val privateKeyContents: String, val claims: Map<String, Any>) {
+class Jwt private constructor(val applicationId: String, val privateKeyContents: String, var claims: Map<String, Any>) {
     val issuedAt: Date by DateClaimDelegate()
     val jti: String by claims
     val notBefore: Date by DateClaimDelegate()
@@ -100,6 +100,7 @@ class Jwt(val applicationId: String, val privateKeyContents: String, val claims:
 
         /**
          * Build the JWT using the stored builder parameters.
+         * @throws IllegalStateException if an application id or private key is missing.
          */
         fun build(): Jwt {
             validate()
