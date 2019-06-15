@@ -102,7 +102,7 @@ String jws = Jwt.builder()
         .generate();
 
 // Or add multiples using a map
-String jws2 = Jwt.builder()
+String jws = Jwt.builder()
         .applicationId("your-application-id")
         .privateKeyPath(Paths.get("/path/to/private.key"))
         .claims(Map.of("foo", "bar", "bat", "baz"))
