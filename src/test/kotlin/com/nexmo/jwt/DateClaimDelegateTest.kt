@@ -25,8 +25,7 @@ import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import java.nio.file.Paths
-import java.util.*
-import kotlin.NoSuchElementException
+import java.time.LocalDateTime
 import kotlin.reflect.KProperty
 import kotlin.test.assertEquals
 
@@ -35,7 +34,7 @@ private const val PRIVATE_KEY_PATH = "src/test/resources/private.key"
 class DateClaimDelegateTest {
     @Test
     fun `when issuedAt property is requested the iat value is read from the claim map`() {
-        val now = Date()
+        val now = LocalDateTime.now()
         val jwt = Jwt.builder()
             .applicationId("application-id")
             .privateKeyPath(Paths.get(PRIVATE_KEY_PATH))
@@ -47,7 +46,7 @@ class DateClaimDelegateTest {
 
     @Test
     fun `when expiresAt property is requested the exp value is read from the claim map`() {
-        val now = Date()
+        val now = LocalDateTime.now()
         val jwt = Jwt.builder()
             .applicationId("application-id")
             .privateKeyPath(Paths.get(PRIVATE_KEY_PATH))
@@ -59,7 +58,7 @@ class DateClaimDelegateTest {
 
     @Test
     fun `when notBefore property is requested the nbf value is read from the claim map`() {
-        val now = Date()
+        val now = LocalDateTime.now()
         val jwt = Jwt.builder()
             .applicationId("application-id")
             .privateKeyPath(Paths.get(PRIVATE_KEY_PATH))

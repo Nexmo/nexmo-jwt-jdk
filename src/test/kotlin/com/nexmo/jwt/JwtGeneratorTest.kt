@@ -24,7 +24,7 @@ package com.nexmo.jwt
 import io.jsonwebtoken.Jwts
 import org.junit.Test
 import java.io.File
-import java.util.*
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -36,7 +36,7 @@ class JwtGeneratorTest {
     @Test
     fun `when a jwt has all custom properties those properties are on the generated token`() {
         val expectedToken =
-            "eyJ0eXBlIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJhcHBsaWNhdGlvbl9pZCI6ImFwcGxpY2F0aW9uLWlkIiwic3ViIjoic3ViamVjdCIsImV4cCI6NjM5MjAxNjAwLCJuYmYiOjYzOTIwMTYwMCwiaWF0Ijo2MzkyMDE2MDAsImp0aSI6ImlkIiwiZm9vIjoiYmFyIn0.dvDggg7ejTNw3WXC06ViItIKw9qgAjiDCU8FNYJuly_Pi9uh-03NqsXc7xFglXPpltkHlTfMP9H5fuAos4nZju7cVD7fWVsuFAz1VUgOdPmbstaw5dt4gBk8itSWHdKyib3UlNXH0TqOEYK9OSTJhzXMSqakmxr3Y1wYDbt8ouLdEighPCgekizbMUXTugCF98iYE3zyWKnLqpqWmYU--bHKQ6w52lcT1raVfFwkJA_7jvP0xrk5OzuuFFG36o5nhiHpP5nv2jLyD4wHKQAFCrPSO2j8dwWBILg8ZIymZ8VKdT7jbiIpm0YSBpoPXSGvv40USo30T81y80shobNUmg"
+            "eyJ0eXBlIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJhcHBsaWNhdGlvbl9pZCI6ImFwcGxpY2F0aW9uLWlkIiwic3ViIjoic3ViamVjdCIsImV4cCI6NjM2NTA4ODAwLCJuYmYiOjYzNjUwODgwMCwiaWF0Ijo2MzY1MDg4MDAsImp0aSI6ImlkIiwiZm9vIjoiYmFyIn0.TTQqqxtcHeaT9UMU7JIQJILs54U2i-yK-suRJM4xyBxYYTTKCy9emGWIOsiROPOxVahOPzjvGOvNQRilceBaQ2JoYPnrCNn8o0qfctxxRhEOQNHIxOvYfYXjncnLTmY2jiG7q4JVN3_GNr-uIoupKnbXOgcKm-rhDBOu4vlMShVOaThb9HqMMyy0lbfIR6XR4IXiFmOSJ3rQIIqqXzAWWwZmj-_u5-5U2kDc6XR4UWW711zrrR3puvAhbIdzy8gVmGFDXBro8137dv6RKOw4l8KskYbe5o5oF2fQsf6Fmjp5R5ZVSa9Kt9_D-XxvADGj8fwEEePsZ0-Xey9hFN5V-A"
         val jwt = Jwt.builder()
             .applicationId("application-id")
             .privateKeyContents(privateKeyContents)
@@ -71,5 +71,5 @@ class JwtGeneratorTest {
         assertTrue(Jwts.parser().isSigned(token))
     }
 
-    private fun testDate() = Calendar.Builder().setDate(1990, 3, 4).build().time
+    private fun testDate() = LocalDateTime.of(1990, 3, 4, 0, 0, 0)
 }
