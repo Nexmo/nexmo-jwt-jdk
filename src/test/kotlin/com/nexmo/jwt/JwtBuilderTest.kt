@@ -130,7 +130,7 @@ class JwtBuilderTest {
 
         assertEquals(1, jwt.claims.size)
         assertEquals("id", jwt.claims["jti"])
-        assertEquals("id", jwt.jti)
+        assertEquals("id", jwt.id)
     }
 
     @Test
@@ -165,7 +165,7 @@ class JwtBuilderTest {
 
         assertEquals(1, jwt.claims.size)
         assertEquals("subject", jwt.claims["sub"])
-        assertEquals("subject", jwt.sub)
+        assertEquals("subject", jwt.subject)
     }
 
     private fun builderWithRequiredFields() = builder.applicationId("application-id")

@@ -31,10 +31,10 @@ import kotlin.collections.LinkedHashMap
  */
 class Jwt private constructor(val applicationId: String, val privateKeyContents: String, var claims: Map<String, Any>) {
     val issuedAt: Date by DateClaimDelegate()
-    val jti: String by claims
+    val id: String by StringClaimDelegate()
     val notBefore: Date by DateClaimDelegate()
     val expiresAt: Date by DateClaimDelegate()
-    val sub: String by claims
+    val subject: String by StringClaimDelegate()
 
     /**
      * Generate a JSON Web Signature from the JWT's properties.
