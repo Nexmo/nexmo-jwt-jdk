@@ -70,6 +70,6 @@ class StringClaimDelegateTest {
         val mockProperty = Mockito.mock(KProperty::class.java)
         given(mockProperty.name).willReturn("fooBar")
 
-        DateClaimDelegate().getValue(jwt, mockProperty) // Throws exception
+        StringClaimDelegate().getValue(jwt, mockProperty) // Throws exception
     }
 }
