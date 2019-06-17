@@ -73,7 +73,7 @@ To generate a JWT with these properties you can use:
 ##### Kotlin
 
 ```kotlin
-val jwt = Jwt.builder()
+val jws = Jwt.builder()
     .applicationId("your-application-id")
     .privateKeyContents("private key contents")
     .build()
@@ -83,7 +83,7 @@ val jwt = Jwt.builder()
 ##### Java
 
 ```java
-Jwt jwt = Jwt.builder()
+String jws = Jwt.builder()
         .applicationId("your-application-id")
         .privateKeyContents("private key contents")
         .build()
