@@ -26,9 +26,6 @@ import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
 
-private const val PRIVATE_KEY_HEADER = "-----BEGIN PRIVATE KEY-----\n"
-private const val PRIVATE_KEY_FOOTER = "-----END PRIVATE KEY-----"
-
 /**
  * Convert a PKCS8Encoded Key to an RsaKey
  */
@@ -42,4 +39,9 @@ class KeyConverter(private val keyFactory: KeyFactory = KeyFactory.getInstance("
         .replace("\\s".toRegex(), "")
 
     private fun keySpec(key: String) = PKCS8EncodedKeySpec(Base64.getDecoder().decode(key))
+
+    companion object {
+        private const val PRIVATE_KEY_HEADER: String = "-----BEGIN PRIVATE KEY-----\n"
+        private const val PRIVATE_KEY_FOOTER = "-----END PRIVATE KEY-----"
+    }
 }
