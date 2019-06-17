@@ -25,6 +25,8 @@ import io.jsonwebtoken.Jwts
 import org.junit.Test
 import java.io.File
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -41,15 +43,64 @@ class JwtGeneratorTest {
             .applicationId("application-id")
             .privateKeyContents(privateKeyContents)
             .subject("subject")
-            .expiresAt(testDate())
-            .notBefore(testDate())
-            .issuedAt(testDate())
+            .expiresAt(testDateInUtc())
+            .notBefore(testDateInUtc())
+            .issuedAt(testDateInUtc())
             .id("id")
             .addClaim("foo", "bar")
             .build()
 
         val token = jwt.generate()
         assertEquals(expectedToken, token)
+    }
+
+    @Test
+    fun `when a jwt is given a time in utc then the expiration, not before, issued at, and custom claim are in utc`() {
+        val expectedToken =
+            "eyJ0eXBlIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJhcHBsaWNhdGlvbl9pZCI6ImFwcGxpY2F0aW9uLWlkIiwiZXhwIjo2MzY1MDg4MDAsIm5iZiI6NjM2NTA4ODAwLCJpYXQiOjYzNjUwODgwMCwianRpIjoiaWQifQ.JUrsXb791U_MNJqamJO903T892I2oJFiGmm9nAoZyClat_hk2vAsjY4kfmLJ0PPg3J--FQnVyNBmTyZKdkk60Iu2kMdC9Ysswts9Kd_1h8IoGg85exlj1TLhbx-GLPLKrEzwjtsULOAt_2R-FAhWhBX_kYAxCG19negf0jDy-t96JksNsVy-BJYGUZvUXaHriXurovd1EqcBhuPkS6QQPDl-6vROOLf7x_0uJlOSPkCs5zKsEz5E6VHBdWxezNtOtRAO8-Yj-zHUfVBABuDQIvELAUVOxvB-rxOYPXoM56fWUbXbf9zOBAD57DPublqre4USW5uErcoIc0LjmGMtEg"
+
+        val jwt = Jwt.builder()
+            .applicationId("application-id")
+            .privateKeyContents(privateKeyContents)
+            .expiresAt(testDateInUtc())
+            .notBefore(testDateInUtc())
+            .issuedAt(testDateInUtc())
+            .id("id")
+            .build()
+
+        val token = jwt.generate()
+        assertEquals(expectedToken, token)
+    }
+
+    @Test
+    fun `when a jwt is given a time in est then the expiration, not before, issued at, and custom claim are in utc`() {
+        val expectedToken =
+            "eyJ0eXBlIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJhcHBsaWNhdGlvbl9pZCI6ImFwcGxpY2F0aW9uLWlkIiwiZXhwIjo2MzY1MjY4MDAsIm5iZiI6NjM2NTI2ODAwLCJpYXQiOjYzNjUyNjgwMCwianRpIjoiaWQifQ.S3buxZvdjg1ycJC8c-8YxlQYbBkTKFyen9KSa0616pOmhSkUB5wpAYPsiLbQsNYJ6RaD-YJ95mXYCsnEnqcsu122a6vT2EncFOWPk72Rxo8kl6Urr8O21v4m-ZPeiCUgpDP3gEkf9Rj2xrXiDQQ6aaab6bHpC3lD9gFBsbEoSkqsneEIuBZHcvZHyRD5C0NRIdpe-K2gTMdxf1uvoZYFldaKkM-S157dvqvBY3DoghMjIUm6OYFpbBo9pIErwCN5-rYPKya3ydV6zEMpAwTJOqr68B4AKp6pCpn_ewVX6lwqt8wDSTeOKC_3s3g9CuNKntUGDy7R_34wZliL5eGqSQ"
+
+        val jwt = Jwt.builder()
+            .applicationId("application-id")
+            .privateKeyContents(privateKeyContents)
+            .expiresAt(testDateInEst())
+            .notBefore(testDateInEst())
+            .issuedAt(testDateInEst())
+            .id("id")
+            .build()
+
+        val token = jwt.generate()
+        assertEquals(expectedToken, token)
+    }
+
+    @Test
+    fun `when two jwts are generated for the same issued time, but different time zones, the tokens are the same`() {
+        val builder = Jwt.builder()
+            .applicationId("application-id")
+            .id("id")
+            .privateKeyContents(privateKeyContents)
+
+        val jwtDenver = builder.issuedAt(ZonedDateTime.now(ZoneId.of("America/Denver"))).build()
+        val jwtTokyo = builder.issuedAt(ZonedDateTime.now(ZoneId.of("Asia/Tokyo"))).build()
+
+        assertEquals(jwtDenver.generate(), jwtTokyo.generate())
     }
 
     @Test
@@ -71,5 +122,6 @@ class JwtGeneratorTest {
         assertTrue(Jwts.parser().isSigned(token))
     }
 
-    private fun testDate() = LocalDateTime.of(1990, 3, 4, 0, 0, 0)
+    private fun testDateInUtc() = ZonedDateTime.of(LocalDateTime.of(1990, 3, 4, 0, 0, 0), ZoneId.of("UTC"))
+    private fun testDateInEst() = ZonedDateTime.of(LocalDateTime.of(1990, 3, 4, 0, 0, 0), ZoneId.of("America/Detroit"))
 }

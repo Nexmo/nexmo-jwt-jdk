@@ -24,8 +24,8 @@ package com.nexmo.jwt
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.Instant
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -44,10 +44,10 @@ class JwtGenerator(private val keyConverter: KeyConverter = KeyConverter()) {
             .addClaims(jwt.claims)
 
         // Add required claims if they don't already exist
-        if (!jwt.claims.containsKey("iat")) jwtBuilder.claim("iat", LocalDateTime.now())
+        if (!jwt.claims.containsKey("iat")) jwtBuilder.claim("iat", Instant.now().epochSecond)
         if (!jwt.claims.containsKey("jti")) jwtBuilder.claim("jti", UUID.randomUUID().toString())
 
-        // Modify known date claims as the library expects a Date as a Long and isn't setup to support LocalDateTime
+        // Modify user date claims as the library expects a Date as a Long and isn't setup to support LocalDateTime
         convertLocalDateTimeClaimToLong("iat", jwt.claims, jwtBuilder)
         convertLocalDateTimeClaimToLong("exp", jwt.claims, jwtBuilder)
         convertLocalDateTimeClaimToLong("nbf", jwt.claims, jwtBuilder)
@@ -56,8 +56,8 @@ class JwtGenerator(private val keyConverter: KeyConverter = KeyConverter()) {
     }
 
     private fun convertLocalDateTimeClaimToLong(key: String, claims: Map<String, Any>, builder: JwtBuilder) {
-        if (claims.containsKey(key) && claims[key] is LocalDateTime) {
-            builder.claim(key, (claims[key] as LocalDateTime).toEpochSecond(ZoneOffset.UTC))
+        if (claims.containsKey(key) && claims[key] is ZonedDateTime) {
+            builder.claim(key, (claims[key] as ZonedDateTime).toEpochSecond())
         }
     }
 }

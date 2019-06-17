@@ -25,7 +25,7 @@ import org.junit.Before
 import org.junit.Test
 import java.io.File
 import java.nio.file.Paths
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 
 private const val PRIVATE_KEY_PATH = "src/test/resources/private.key"
@@ -112,7 +112,7 @@ class JwtBuilderTest {
 
     @Test
     fun `when issued at is given the jwt is built with it`() {
-        val now = LocalDateTime.now()
+        val now = ZonedDateTime.now()
         val jwt = builderWithRequiredFields()
             .issuedAt(now)
             .build()
@@ -135,7 +135,7 @@ class JwtBuilderTest {
 
     @Test
     fun `when not before is given the jwt is built with it`() {
-        val now = LocalDateTime.now()
+        val now = ZonedDateTime.now()
         val jwt = builderWithRequiredFields()
             .notBefore(now)
             .build()
@@ -147,7 +147,7 @@ class JwtBuilderTest {
 
     @Test
     fun `when expires at is given the jwt is built with it`() {
-        val now = LocalDateTime.now()
+        val now = ZonedDateTime.now()
         val jwt = builderWithRequiredFields()
             .expiresAt(now)
             .build()

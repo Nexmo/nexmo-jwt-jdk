@@ -21,11 +21,11 @@
  */
 package com.nexmo.jwt
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class DateClaimDelegate : ReadOnlyProperty<Jwt, LocalDateTime> {
+class DateClaimDelegate : ReadOnlyProperty<Jwt, ZonedDateTime> {
     override fun getValue(thisRef: Jwt, property: KProperty<*>) = getClaimOrThrowException(
         when (property.name) {
             "issuedAt" -> "iat"
@@ -36,7 +36,7 @@ class DateClaimDelegate : ReadOnlyProperty<Jwt, LocalDateTime> {
     )
 
     private fun getClaimOrThrowException(key: String, claims: Map<String, Any?>) =
-        (claims[key] ?: throwNoSuchElementException(key)) as LocalDateTime
+        (claims[key] ?: throwNoSuchElementException(key)) as ZonedDateTime
 
     private fun throwNoSuchElementException(name: String) {
         throw NoSuchElementException("Claim $name is not set.")

@@ -23,16 +23,16 @@ package com.nexmo.jwt
 
 import java.nio.file.Files
 import java.nio.file.Path
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 /**
  * Class representing a JWT for interacting with the Nexmo API. Construct using Jwt.builder
  */
 class Jwt private constructor(val applicationId: String, val privateKeyContents: String, var claims: Map<String, Any>) {
-    val issuedAt: LocalDateTime by DateClaimDelegate()
+    val issuedAt: ZonedDateTime by DateClaimDelegate()
     val id: String by StringClaimDelegate()
-    val notBefore: LocalDateTime by DateClaimDelegate()
-    val expiresAt: LocalDateTime by DateClaimDelegate()
+    val notBefore: ZonedDateTime by DateClaimDelegate()
+    val expiresAt: ZonedDateTime by DateClaimDelegate()
     val subject: String by StringClaimDelegate()
 
     /**
@@ -76,7 +76,7 @@ class Jwt private constructor(val applicationId: String, val privateKeyContents:
         /**
          * Set the issued at (iat) claim.
          */
-        fun issuedAt(iat: LocalDateTime) = addClaim("iat", iat)
+        fun issuedAt(iat: ZonedDateTime) = addClaim("iat", iat)
 
         /**
          * Set the JWT ID (jti) claim.
@@ -86,12 +86,12 @@ class Jwt private constructor(val applicationId: String, val privateKeyContents:
         /**
          * Set the not before (nbf) claim.
          */
-        fun notBefore(nbf: LocalDateTime) = addClaim("nbf", nbf)
+        fun notBefore(nbf: ZonedDateTime) = addClaim("nbf", nbf)
 
         /**
          * Set the expiration (exp) claim.
          */
-        fun expiresAt(exp: LocalDateTime) = addClaim("exp", exp)
+        fun expiresAt(exp: ZonedDateTime) = addClaim("exp", exp)
 
         /**
          * Set the subject (sub) claim.
