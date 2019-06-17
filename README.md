@@ -8,6 +8,56 @@ This library provides a wrapper for generating JWTs using Nexmo-specific claims.
 
 Learn more about [Authenticating with JSON Web Tokens](https://developer.nexmo.com/concepts/guides/authentication#json-web-tokens-jwt).
 
+## Installation
+
+For Gradle:
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.nexmo:jwt:1.0.0-SNAPSHOT'
+}
+```
+
+For Maven:
+
+```xml
+<dependency>
+  <groupId>com.nexmo</groupId>
+  <artifactId>jwt</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+### Snapshot Repository
+
+Snapshot releases happen periodically to test new functionality. If you'd like to use these versions, you can add the snapshot repository.
+
+For Gradle:
+
+```groovy
+repositories {
+  maven {
+    url 'https://oss.sonatype.org/content/repositories/snapshots/'
+  }
+}
+```
+
+For Maven:
+
+```xml
+<repository>
+  <id>sonatype-snapshot</id>
+  <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+  <snapshots>
+    <enabled>true</enabled>
+  </snapshots>
+</repository>
+```
+
 ## Usage
 
 The JWT library provides a `Jwt.Builder` which can be used to construct a `Jwt` representation. The `Jwt` class contains a `generate()` method for generating JSON Web Signatures that can then be used to authenticate with the API.
