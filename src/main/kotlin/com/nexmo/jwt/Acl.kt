@@ -25,7 +25,7 @@ import com.nexmo.jwt.utils.remove
 import java.util.*
 
 internal class Acl(@Suppress("unused") val paths: Map<String, Path>) {
-    class Path(val methods: MutableSet<Scope.Method>)
+    internal class Path(val methods: MutableSet<Scope.Method>)
 
     internal companion object {
         fun fromScopes(scopes: Set<Scope>): Acl {
