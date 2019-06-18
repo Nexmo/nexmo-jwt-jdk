@@ -23,6 +23,7 @@ package com.nexmo.jwt
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.time.ZonedDateTime
 
 /**
@@ -62,6 +63,11 @@ class Jwt private constructor(val applicationId: String, val privateKeyContents:
          * Set the private key path.
          */
         fun privateKeyPath(privateKeyPath: Path) = privateKeyContents(String(Files.readAllBytes(privateKeyPath)))
+
+        /**
+         * Set the private key path.
+         */
+        fun privateKeyPath(privateKeyPath: String) = privateKeyPath(Paths.get(privateKeyPath))
 
         /**
          * Add multiple claims by putting all entries in a claim map to the existing claim map.
