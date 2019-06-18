@@ -46,7 +46,7 @@ class Jwt private constructor(val applicationId: String, val privateKeyContents:
     class Builder(
         private var applicationId: String = "",
         private var privateKeyContents: String = "",
-        private var claims: MutableMap<String, Any> = LinkedHashMap()
+        private var claims: MutableMap<String, Any> = mutableMapOf()
     ) {
         /**
          * Set the application id.
