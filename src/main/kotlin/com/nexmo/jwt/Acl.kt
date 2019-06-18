@@ -21,6 +21,43 @@
  */
 package com.nexmo.jwt
 
+import com.nexmo.jwt.utils.remove
+import java.util.*
+
 internal class Acl(@Suppress("unused") val paths: Map<String, Path>) {
     class Path(val methods: MutableSet<Scope.Method>)
+
+    internal companion object {
+        fun fromScopes(scopes: Set<Scope>): Acl {
+            val pathMap = scopes.groupBy({ it.path }, { it.methods })
+                .mapValues { Path(it.value.flatten().toMutableSet()) }
+
+            // Copy the map for filtering
+            val result = LinkedHashMap(pathMap)
+
+            pathMap.filter { it.key.contains("/**") }.forEach {
+                it.value.methods.addAll(pathMap.filter { (k, _) ->
+                    k in relevantKeyList(it.key)
+                }.values.flatMap { path -> path.methods })
+
+                removeEngulfedKeys(result, it.key)
+            }
+
+            return Acl(paths = result)
+        }
+
+        private fun relevantKeyList(key: String) = listOf(
+            key,
+            key.replace("/**", ""),
+            key.replace("/**", "/"),
+            key.replace("/**", "/*")
+        )
+
+        private fun removeEngulfedKeys(map: MutableMap<String, Path>, engulfingKey: String) {
+            val noWildCardName = engulfingKey.replace("/**", "")
+            val slashName = engulfingKey.replace("/**", "/")
+            val singleWildCardName = engulfingKey.replace("/**", "/*")
+            map.remove(noWildCardName, slashName, singleWildCardName)
+        }
+    }
 }
