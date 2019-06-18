@@ -46,6 +46,10 @@ class JwtGenerator(private val keyConverter: KeyConverter = KeyConverter()) {
         addRequiredNonExistentClaims(jwt.claims, jwtBuilder)
         convertUserSuppliedDateClaimsToEpoch(jwt.claims, jwtBuilder)
 
+        if (jwt.scopes.isNotEmpty()) {
+            jwtBuilder.claim("acl", convertScopesToAcl(jwt.scopes))
+        }
+
         return jwtBuilder.signWith(privateKey, SignatureAlgorithm.RS256).compact()
     }
 
@@ -65,4 +69,40 @@ class JwtGenerator(private val keyConverter: KeyConverter = KeyConverter()) {
 
         )
     }
+
+    private fun convertScopesToAcl(scopes: Set<Scope>): Acl {
+        val pathMap = scopes.groupBy({ it.path }, { it.methods })
+            .mapValues { Acl.Path(it.value.flatten().toMutableSet()) }
+
+        // Copy the map for filtering
+        val result = LinkedHashMap(pathMap)
+
+        pathMap.filter { it.key.contains("/**") }.forEach {
+            it.value.methods.addAll(pathMap.filter { (k, _) ->
+                k in relevantKeyList(it.key)
+            }.values.flatMap { path -> path.methods })
+
+            removeEngulfedKeys(result, it.key)
+        }
+
+        return Acl(paths = result)
+    }
+
+    private fun relevantKeyList(key: String) = listOf(
+        key,
+        key.replace("/**", ""),
+        key.replace("/**", "/"),
+        key.replace("/**", "/*")
+    )
+
+    private fun removeEngulfedKeys(map: MutableMap<String, Acl.Path>, engulfingKey: String) {
+        val noWildCardName = engulfingKey.replace("/**", "")
+        val slashName = engulfingKey.replace("/**", "/")
+        val singleWildCardName = engulfingKey.replace("/**", "/*")
+        map.remove(noWildCardName, slashName, singleWildCardName)
+    }
+}
+
+private fun <K, V> MutableMap<K, V>.remove(vararg keys: K) {
+    keys.forEach { this.remove(it) }
 }

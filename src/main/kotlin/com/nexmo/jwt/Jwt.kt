@@ -29,7 +29,12 @@ import java.time.ZonedDateTime
 /**
  * Class representing a JWT for interacting with the Nexmo API. Construct using Jwt.builder
  */
-class Jwt private constructor(val applicationId: String, val privateKeyContents: String, var claims: Map<String, Any>) {
+class Jwt private constructor(
+    val applicationId: String,
+    val privateKeyContents: String,
+    var claims: Map<String, Any>,
+    var scopes: Set<Scope>
+) {
     val issuedAt: ZonedDateTime by DateClaimDelegate()
     val id: String by StringClaimDelegate()
     val notBefore: ZonedDateTime by DateClaimDelegate()
@@ -47,7 +52,8 @@ class Jwt private constructor(val applicationId: String, val privateKeyContents:
     class Builder(
         private var applicationId: String = "",
         private var privateKeyContents: String = "",
-        private var claims: MutableMap<String, Any> = mutableMapOf()
+        private var claims: MutableMap<String, Any> = mutableMapOf(),
+        private var scopes: MutableSet<Scope> = mutableSetOf()
     ) {
         /**
          * Set the application id.
@@ -105,12 +111,22 @@ class Jwt private constructor(val applicationId: String, val privateKeyContents:
         fun subject(subject: String) = addClaim("sub", subject)
 
         /**
+         * Add a set of scopes to the existing set of scopes.
+         */
+        fun scopes(scopes: Set<Scope>) = apply { this.scopes.addAll(scopes) }
+
+        /**
+         * Add a single scope to the set of scopes.
+         */
+        fun addScope(scope: Scope) = apply { this.scopes.add(scope) }
+
+        /**
          * Build the JWT using the stored builder parameters.
          * @throws IllegalStateException if an application id or private key is missing.
          */
         fun build(): Jwt {
             validate()
-            return Jwt(applicationId, privateKeyContents, claims)
+            return Jwt(applicationId, privateKeyContents, claims, scopes)
         }
 
         private fun validate() {
