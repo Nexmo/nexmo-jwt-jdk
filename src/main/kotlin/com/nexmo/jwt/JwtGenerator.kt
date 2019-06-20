@@ -43,21 +43,26 @@ class JwtGenerator(private val keyConverter: KeyConverter = KeyConverter()) {
             .claim("application_id", jwt.applicationId)
             .addClaims(jwt.claims)
 
-        // Add required claims if they don't already exist
-        if (!jwt.claims.containsKey("iat")) jwtBuilder.claim("iat", Instant.now().epochSecond)
-        if (!jwt.claims.containsKey("jti")) jwtBuilder.claim("jti", UUID.randomUUID().toString())
-
-        // Modify user date claims as the library expects a Date as a Long and isn't setup to support LocalDateTime
-        convertLocalDateTimeClaimToLong("iat", jwt.claims, jwtBuilder)
-        convertLocalDateTimeClaimToLong("exp", jwt.claims, jwtBuilder)
-        convertLocalDateTimeClaimToLong("nbf", jwt.claims, jwtBuilder)
+        addRequiredNonExistentClaims(jwt.claims, jwtBuilder)
+        convertUserSuppliedDateClaimsToEpoch(jwt.claims, jwtBuilder)
 
         return jwtBuilder.signWith(privateKey, SignatureAlgorithm.RS256).compact()
     }
 
-    private fun convertLocalDateTimeClaimToLong(key: String, claims: Map<String, Any>, builder: JwtBuilder) {
-        if (claims.containsKey(key) && claims[key] is ZonedDateTime) {
-            builder.claim(key, (claims[key] as ZonedDateTime).toEpochSecond())
-        }
+    private fun addRequiredNonExistentClaims(claims: Map<String, Any>, jwtBuilder: JwtBuilder) {
+        if (!claims.containsKey("iat")) jwtBuilder.claim("iat", Instant.now().epochSecond)
+        if (!claims.containsKey("jti")) jwtBuilder.claim("jti", UUID.randomUUID().toString())
+    }
+
+    private fun convertUserSuppliedDateClaimsToEpoch(claims: Map<String, Any>, jwtBuilder: JwtBuilder) {
+        convertZonedDateTimesToLong(claims, jwtBuilder, "iat", "exp", "nbf")
+    }
+
+    private fun convertZonedDateTimesToLong(claims: Map<String, Any>, builder: JwtBuilder, vararg keys: String) {
+        builder.addClaims(
+            claims.filter { it.key in keys && it.value is ZonedDateTime }
+                .mapValues { (it.value as ZonedDateTime).toEpochSecond() }
+
+        )
     }
 }
