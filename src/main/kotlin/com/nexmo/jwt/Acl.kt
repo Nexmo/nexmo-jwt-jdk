@@ -21,7 +21,6 @@
  */
 package com.nexmo.jwt
 
-import com.nexmo.jwt.utils.remove
 import java.util.*
 
 internal class Acl(@Suppress("unused") val paths: Map<String, Path>) {
@@ -57,7 +56,7 @@ internal class Acl(@Suppress("unused") val paths: Map<String, Path>) {
             val noWildCardName = engulfingKey.replace("/**", "")
             val slashName = engulfingKey.replace("/**", "/")
             val singleWildCardName = engulfingKey.replace("/**", "/*")
-            map.remove(noWildCardName, slashName, singleWildCardName)
+            map.keys.removeAll(listOf(noWildCardName, slashName, singleWildCardName))
         }
     }
 }
