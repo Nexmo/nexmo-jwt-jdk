@@ -3,12 +3,16 @@ dist: precise
 language: java
 matrix:
   include:
-    - jdk: oraclejdk8
+    - jdk: openjdk8
       dist: trusty
-    - jdk: oraclejdk9
+    - jdk: openjdk9
       dist: trusty
-    - jdk: oraclejdk11
+    - jdk: openjdk11
       dist: trusty
+    - jdk: openjdk-ea
+      dist: trusty
+  allow_failures:
+    - jdk: openjdk-ea
 cache:
   directories:
     - $HOME/.m2
