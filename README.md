@@ -1,7 +1,7 @@
 # Nexmo JWT JDK Library
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.nexmo/jwt.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.nexmo%22%20AND%20a:%22jwtr%22)
-[![Build Status](https://travis-ci.org/Nexmo/nexmo-jwt-jdk.svg?branch=master)](https://travis-ci.org/Nexmo/nexmo-jwt-jdk)
+[![Build Status](https://travis-ci.org/Nexmo/nexmo-jwt-jdk.svg?branch=main)](https://travis-ci.org/Nexmo/nexmo-jwt-jdk)
 [![codecov](https://codecov.io/gh/Nexmo/nexmo-jwt-jdk/branch/master/graph/badge.svg)](https://codecov.io/gh/Nexmo/nexmo-jwt-jdk)
 
 This library provides a wrapper for generating JWTs using Nexmo-specific claims.
